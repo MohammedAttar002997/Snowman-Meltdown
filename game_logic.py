@@ -26,10 +26,6 @@ def display_game_state(mistakes, secret_word, guessed_letters):
 
 
 def play_game():
-    # secret_word = get_random_word()
-    # guessed_letters = []
-    # mistakes = 0
-    # max_mistakes = len(STAGES) - 1
     replay = False
     print("Welcome to Snowman Meltdown!")
 
@@ -41,10 +37,11 @@ def play_game():
         max_mistakes = len(STAGES) - 1
         while mistakes < max_mistakes:
             display_game_state(mistakes, secret_word, guessed_letters)
-
             guess = input("Guess a letter: ").lower()
+
             while len(guess) > 1:
                 guess = input("Please enter a valid letter: ").lower()
+
             # Input validation: check if already guessed
             if guess in guessed_letters:
                 print(f"You already guessed '{guess}'! Try a different one.")
@@ -67,6 +64,7 @@ def play_game():
                 # Loss condition: only reached if the while loop finishes without a 'return'
                 display_game_state(mistakes, secret_word, guessed_letters)
                 print(f"Bummer! You ran out of tries. The word was: {secret_word}")
+
         replay_option = input("Do you want to play again?(yes(Y)/no(NO)) ")
         if replay_option.lower() == "n":
             replay = True
