@@ -54,16 +54,15 @@ def play_game():
             else:
                 mistakes += 1
                 print(f"Sorry, '{guess}' is not in the word.")
-
-            # Win condition: check if every letter in the word has been guessed
-            if all(letter in guessed_letters for letter in secret_word):
-                display_game_state(mistakes, secret_word, guessed_letters)
-                print(f"Congratulations! You won! The word was: {secret_word}")
-                return
-            else:
-                # Loss condition: only reached if the while loop finishes without a 'return'
-                display_game_state(mistakes, secret_word, guessed_letters)
-                print(f"Bummer! You ran out of tries. The word was: {secret_word}")
+        # Win condition: check if every letter in the word has been guessed
+        if all(letter in guessed_letters for letter in secret_word):
+            display_game_state(mistakes, secret_word, guessed_letters)
+            print(f"Congratulations! You won! The word was: {secret_word}")
+            return
+        else:
+            # Loss condition: only reached if the while loop finishes without a 'return'
+            display_game_state(mistakes, secret_word, guessed_letters)
+            print(f"Bummer! You ran out of tries. The word was: {secret_word}")
 
         replay_option = input("Do you want to play again?(yes(Y)/no(NO)) ")
         if replay_option.lower() == "n":
