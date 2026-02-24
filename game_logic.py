@@ -8,7 +8,7 @@ WORDS = ["python", "git", "github", "snowman", "meltdown"]
 
 def get_random_word():
     """Selects a random word from the list."""
-    return WORDS[random.randint(0, len(WORDS) - 1)]
+    return random.choice(WORDS)
 
 
 def display_game_state(mistakes, secret_word, guessed_letters):
@@ -26,11 +26,11 @@ def display_game_state(mistakes, secret_word, guessed_letters):
 
 
 def play_game():
-    replay = False
+    replay = True
     print("Welcome to Snowman Meltdown!")
 
     # The while loop allows the game to continue until a win or loss condition is met
-    while not replay:
+    while replay:
         secret_word = get_random_word()
         mistakes = 0
         guessed_letters = []
@@ -39,7 +39,7 @@ def play_game():
             display_game_state(mistakes, secret_word, guessed_letters)
             guess = input("Guess a letter: ").lower()
 
-            while len(guess) > 1:
+            while len(guess) > 1 or guess == "":
                 guess = input("Please enter a valid letter: ").lower()
 
             # Input validation: check if already guessed
@@ -58,12 +58,12 @@ def play_game():
         if all(letter in guessed_letters for letter in secret_word):
             display_game_state(mistakes, secret_word, guessed_letters)
             print(f"Congratulations! You won! The word was: {secret_word}")
-            return
+            replay = False
         else:
             # Loss condition: only reached if the while loop finishes without a 'return'
             display_game_state(mistakes, secret_word, guessed_letters)
             print(f"Bummer! You ran out of tries. The word was: {secret_word}")
 
-        replay_option = input("Do you want to play again?(yes(Y)/no(NO)) ")
+        replay_option = input("Do you want to play again?(yes(Y)/no(N))")
         if replay_option.lower() == "n":
-            replay = True
+            replay = False
