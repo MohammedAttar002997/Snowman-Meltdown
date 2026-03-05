@@ -12,8 +12,11 @@ def get_random_word():
 
 
 def display_game_state(mistakes, secret_word, guessed_letters):
+    """Displays the current state of the snowman and the word progress."""
     # Display the snowman stage for the current number of mistakes.
-    print(STAGES[mistakes])
+    if mistakes < len(STAGES):
+        print(STAGES[mistakes])
+
     # Build a display version of the secret word.
     display_word = ""
     for letter in secret_word:
@@ -26,44 +29,56 @@ def display_game_state(mistakes, secret_word, guessed_letters):
 
 
 def play_game():
-    replay = True
+    """Main game loop for Snowman Meltdown."""
     print("Welcome to Snowman Meltdown!")
 
-    # The while loop allows the game to continue until a win or loss condition is met
+    replay = True
     while replay:
         secret_word = get_random_word()
         mistakes = 0
         guessed_letters = []
         max_mistakes = len(STAGES) - 1
+        game_over = False
+
+        # Inner loop for the current round
         while mistakes < max_mistakes:
             display_game_state(mistakes, secret_word, guessed_letters)
-            guess = input("Guess a letter: ").lower()
 
-            while len(guess) > 1 or guess == "":
-                guess = input("Please enter a valid letter: ").lower()
+            guess = input("Guess a letter: ").lower().strip()
 
-            # Input validation: check if already guessed
+            # Input validation
+            while len(guess) != 1 or not guess.isalpha():
+                guess = input("Please enter a single valid letter: ").lower().strip()
+
+            # Check if already guessed
             if guess in guessed_letters:
                 print(f"You already guessed '{guess}'! Try a different one.")
                 continue
 
-            # Check if the guess exists anywhere in the secret word
+            # Add to guessed letters
+            guessed_letters.append(guess)
+
+            # Check if the guess exists in the secret word
             if guess in secret_word:
                 print(f"Good job! '{guess}' is in the word.")
-                guessed_letters.append(guess)
+
+                # IMMEDIATE WIN CHECK: Check if all letters have been guessed
+                if all(letter in guessed_letters for letter in secret_word):
+                    display_game_state(mistakes, secret_word, guessed_letters)
+                    print(f"Congratulations! You won! The word was: {secret_word}")
+                    game_over = True
+                    break
             else:
                 mistakes += 1
                 print(f"Sorry, '{guess}' is not in the word.")
-        # Win condition: check if every letter in the word has been guessed
-        if all(letter in guessed_letters for letter in secret_word):
-            display_game_state(mistakes, secret_word, guessed_letters)
-            print(f"Congratulations! You won! The word was: {secret_word}")
-            replay = False
-        else:
-            # Loss condition: only reached if the while loop finishes without a 'return'
+
+        # If the loop finished because of mistakes (and not a win)
+        if not game_over and mistakes >= max_mistakes:
             display_game_state(mistakes, secret_word, guessed_letters)
             print(f"Bummer! You ran out of tries. The word was: {secret_word}")
 
-        replay_option = input("Do you want to play again?(yes(Y)/no(N))")
-        if replay_option.lower() == "n":
+        # Replay logic: Ask the user if they want to play again
+        replay_option = input("Do you want to play again? (yes(Y)/no(N)): ").lower().strip()
+        if replay_option != 'y' and replay_option != 'yes':
             replay = False
+            print("Thanks for playing! Goodbye!")
